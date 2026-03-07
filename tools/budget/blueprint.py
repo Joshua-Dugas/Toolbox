@@ -20,23 +20,20 @@ def ui():
 @budget.route("/add", methods=["POST"])
 def add():
 
-    name = request.form["name"]
-    amount = float(request.form["amount"])
+    name = request.form["Expense Name"]
+    amount = request.form["Expense Amount"]
 
-    expenses.append({
+    expense = {
         "name": name,
         "amount": amount
-    })
+    }
 
-    total = sum(e["amount"] for e in expenses)
-
-    rows = "".join(
-        f"<li>{e['name']} - ${e['amount']}</li>"
-        for e in expenses
-    )
+    expenses.append(expense)
 
     return f"""
-    <ul>{rows}</ul>
-    <strong>Total: ${total}</strong>
+    <tr>
+        <td>{name}</td>
+        <td>${amount}</td>
+    </tr>
     """
 
