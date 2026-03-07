@@ -1,0 +1,25 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="" href="/static/layout.css">
+<title>Joshua's Toolbox</title>
+</head>
+  <body>
+    <div class="app">
+      <div class="sidebar">
+        <h2>Tools</h2>
+        <button
+        hx-get="/tool/budget"
+        hx-target="#workspace"
+        hx-swap="innerHTML">
+        Budget
+        </button>
+
+      </div>
+      <div class="workspace" id="workspace">
+        {% block content %}{% endblock %}
+      </div>
+      
+    </div>
+  </body>
+</html>

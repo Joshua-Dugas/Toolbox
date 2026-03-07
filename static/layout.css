@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: Arial;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background: #1e1e1e;
+    color: white;
+    padding: 15px; 
+}
+
+.sidebar button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px;
+    border: none;
+    background: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background: #555;
+}
+
+.workspace {
+    flex: 1;
+    padding: 25px;
+    background: #f4f4f4;
+    overflow-y: auto;
+}
+
