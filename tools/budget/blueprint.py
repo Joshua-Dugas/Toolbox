@@ -20,9 +20,10 @@ def ui():
 @budget.route("/add", methods=["POST"])
 def add():
 
-    name = request.form["Expense Name"]
-    amount = request.form["Expense Amount"]
+    name = request.form["name"]
+    amount = float(request.form["amount"])
 
+    
     expense = {
         "name": name,
         "amount": amount
@@ -30,10 +31,17 @@ def add():
 
     expenses.append(expense)
 
+
+    total = sum(e["amount"] for e in expenses)
+    
+    #hx-swap-oob replaces the value of whatever you pass in as the id 
+    #So in our case we replace the total field everytime we add expenses with the new total 
     return f"""
     <tr>
-        <td>{name}</td>
-        <td>${amount}</td>
+    <td>{name}</td>
+    <td>${amount}</td>
     </tr>
+    <td id="total-amount" hx-swap-oob="true">${total}</td> 
     """
+
 

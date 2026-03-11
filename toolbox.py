@@ -4,6 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
+    print("Toolbox Initializing \n Welcome to the dashboard!")
     return render_template("dashboard.html")
 
 #register blueprints here
