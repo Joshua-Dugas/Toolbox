@@ -1,17 +1,18 @@
 <h3>Family Budget</h3>
+<style>
+.selected{
+  background-color: #1aff66;
+}
 
-<form
-hx-post="/tool/budget/add"
-hx-target="#total-row"
-hx-swap="beforebegin">
+#delete-button{
+  background-color: #FF2400;
+}
+</style>
 
-<input name="name" placeholder="Expense name" required>
 
-<input name="amount" type="number" step="0.01" placeholder="Amount" required>
-
-<button type="submit">Add</button>
-
-</form>
+<input id="name" name="name" placeholder="Expense name" required>
+<input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
+<button type="button" onclick="addExpense()">Add</button>
 
 <hr>
 
@@ -28,6 +29,81 @@ hx-swap="beforebegin">
     <td id="total-amount">$0</td>
     </tr> 
   </tbody>
-  </tr>
 </table>
+
+<button id="delete-button" type="button" onclick="deleteExpense()">Delete Selected Row</button>
+
+<script>
+async function addExpense() {
+    const name = document.getElementById("name").value;
+    const amount = document.getElementById("amount").value;
+    
+    const rows = document.querySelectorAll("#expense-list tr");
+    for (const row of rows) {
+        if (row.id === "total-row") continue; // skip total row
+        const existingName = row.children[0].innerText.trim();
+        if (existingName === name) {
+            alert(`Expense "${name}" already exists!`);
+            return;
+        }
+    }
+
+    const response = await fetch("/tool/budget/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, amount })
+    });
+
+    const data = await response.json();
+
+    const table = document.getElementById("expense-list");
+    const totalRow = document.getElementById("total-row");
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${data.name}</td>
+        <td>$${data.amount}</td>
+    `;
+    row.addEventListener("click", selectRow);
+    table.insertBefore(row, totalRow);
+
+    document.getElementById("total-amount").innerText = `$${data.total}`;
+
+    // Clear inputs
+    document.getElementById("name").value = "";
+    document.getElementById("amount").value = "";
+}
+
+function selectRow(event) {
+    const rows = document.querySelectorAll("#expense-list tr");
+    rows.forEach(r => r.classList.remove("selected"));
+
+    const row = event.currentTarget;
+    if (row.id !== "total-row") {
+        row.classList.add("selected");
+    }
+}
+
+async function deleteExpense() {
+    const selected = document.querySelector("#expense-list .selected");
+    if (!selected) return alert("Select a row first");
+    
+    const name = selected.children[0].innerText;
+    const amount = selected.children[1].innerText.replace("$", "");
+
+    const response = await fetch("/tool/budget/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, amount })
+    });
+    
+    const data = await response.json();
+    console.log(data);
+    document.getElementById("total-amount").innerText = `$${data.total}`;
+    
+    if (response.ok) {
+        selected.remove();
+    }
+}
+</script>  
 

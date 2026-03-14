@@ -8,7 +8,7 @@ def dashboard():
     return render_template("dashboard.html")
 
 #register blueprints here
-from tools.budget.blueprint import budget
+from tools.budget.routes import budget
 app.register_blueprint(budget, url_prefix="/tool/budget")
 
 #Maybe change this port in future
