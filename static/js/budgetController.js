@@ -1,88 +1,33 @@
-<h3>Family Budget</h3>
-<!--TODO: Stop being lazy and break out a css and js file-->
-<style>
-.selected{
-  background-color: #1aff66;
+//TODO:Extreme repetition, need to find way to combine method
+async function init(){
+  await loadExpenses();
+  await loadIncomes();
+  populateBreakdownTable();
 }
 
-.delete-button{
-  background-color: #FF2400;
+async function populateBreakdownTable(){
+
+  let expenseTotal = parseFloat(
+    document.getElementById("expense-total-amount").innerText.replace("$", "")
+  );
+
+  let incomeTotal = parseFloat(
+    document.getElementById("income-total-amount").innerText.replace("$", "")
+  );
+
+  let netTotal = incomeTotal - expenseTotal;
+
+  document.getElementById("bd-income-total-amount").innerText = `$${incomeTotal.toFixed(2)}`;
+  document.getElementById("bd-expense-toal-amount").innerText = `$${expenseTotal.toFixed(2)}`;
+  document.getElementById("net-amount").innerText = `$${netTotal.toFixed(2)}`;
 }
 
-.table-container{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  align-items: flex-start;
-}
-
-.input-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  align-items: flex-start;
-}
-</style>
-
-<div class=input-container>  
-<input id="name" name="name" placeholder="Expense name" required>
-<input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
-<button type="button" onclick="addExpense()">Add</button>
-
-<input id="income-name" name="income-name" placeholder="income name" required>
-<input id="income-amount" name="income-amount" type="number" step="0.01" placeholder="Amount" required>
-<button type="button" onclick="addIncome()">Add</button>
-</div>
-
-<hr>
-
-<div class="table-container">
-  
-<table id="expense-table">
-  <thead>
-  <tr>
-  <th>Expense</th>
-  <th>Amount</th>
-  </tr>
-  </thead>
-  <tbody id="expense-list">
-    <tr id="total-row">
-    <td><strong>Total</strong></td>
-    <td id="total-amount">$0</td>
-    </tr> 
-  </tbody>
-</table>
-<button class="delete-button" type="button" onclick="deleteExpense()">Delete Selected Expense</button>
-
-
-<table id="income-table">
-  <thead>
-  <tr>
-      <th>Income</th>
-      <th>Amount</th>
-  </tr>
-  </thead>
-  <tbody id="income-list">
-   <tr id="income-total-row">
-    <td><strong>Total</strong></td>
-    <td id="income-total-amount"></td>
-    </tr>
-  </tbody>
-</table>
-<button class="delete-button" type="button" onclick="deleteIncome()">Delete Selected Income</button>
-</div>
-
-
-<script>
-//TODO:Extreme repetition, need to find way to combine methods 
 async function loadExpenses() {
     const response = await fetch("/tool/budget/expenses/getData");
     const expenses = await response.json();
 
     const table = document.getElementById("expense-list");
-    const totalRow = document.getElementById("total-row");
+    const totalRow = document.getElementById("expense-total-row");
 
     let total = 0;
 
@@ -101,8 +46,8 @@ async function loadExpenses() {
 
         total += Number(amount);
     }
-
-    document.getElementById("total-amount").innerText =
+    //loads value for breakdown talbe 
+    document.getElementById("expense-total-amount").innerText =
         `$${total.toFixed(2)}`;
 }
 
@@ -242,7 +187,7 @@ async function addExpense() {
 
     row.addEventListener("click", selectRow);
 
-    table.insertBefore(row, totalRow);
+    table.insertBefore(row);
 
     document.getElementById("total-amount").innerText =
         `$${Number(data.total).toFixed(2)}`;
@@ -306,7 +251,5 @@ async function deleteIncome(){
     }
 }
 
-loadExpenses()
-loadIncomes()
-</script>  
+init()
 

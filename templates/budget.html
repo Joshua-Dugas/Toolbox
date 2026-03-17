@@ -1,0 +1,102 @@
+<!-- Have to apply specific styles here due to overriding layout.css. Need to find better solution-->
+<style>
+.selected{
+  background-color: #1aff66;
+}
+
+.delete-button{
+  background-color: #FF2400;
+}
+
+.table-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  align-items: flex-start;
+}
+
+.input-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  align-items: flex-start;
+}
+</style>
+
+<h3>Family Budget</h3>
+<div class=input-container>  
+<input id="name" name="name" placeholder="Expense name" required>
+<input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
+<button type="button" onclick="addExpense()">Add</button>
+
+<input id="income-name" name="income-name" placeholder="income name" required>
+<input id="income-amount" name="income-amount" type="number" step="0.01" placeholder="Amount" required>
+<button type="button" onclick="addIncome()">Add</button>
+</div>
+
+<hr>
+
+<div class="table-container">
+  
+<table id="expense-table">
+  <thead>
+  <tr>
+  <th>Expense</th>
+  <th>Amount</th>
+  </tr>
+  </thead>
+  <tbody id="expense-list">
+    <tr id="expense-total-row">
+    <td><strong>Total</strong></td>
+    <td id="expense-total-amount">$0</td>
+    </tr> 
+  </tbody>
+</table>
+<button class="delete-button" type="button" onclick="deleteExpense()">Delete Selected Expense</button>
+
+
+<table id="income-table">
+  <thead>
+  <tr>
+      <th>Income</th>
+      <th>Amount</th>
+  </tr>
+  </thead>
+  <tbody id="income-list">
+   <tr id="income-total-row">
+    <td><strong>Total</strong></td>
+    <td id="income-total-amount"></td>
+    </tr>
+  </tbody>
+</table>
+<button class="delete-button" type="button" onclick="deleteIncome()">Delete Selected Income</button>
+
+<table>
+    <thead>
+  <tr>
+    <th>Breakdown Categories</th>
+    <th>Amount</th>
+  </tr>
+    </thead>
+    <tbody id="breakdown-table">
+      <tr id="bd-income-total-row">
+        <td><strong>Total Income</strong></td>
+        <td id="bd-income-total-amount"></td>
+      </tr>
+      <tr id="bd-expense-total-row">
+        <td><strong>Total Expenses</strong></td>
+        <td id="bd-expense-total-amount"></td>
+      </tr>
+      <tr id="net-income-row">
+        <td><strong>Net Income</strong></td>
+        <td id="net-amount"></td>
+      </tr>
+    </tbody>
+</table>
+</div>
+
+
+<script src="/static/js/budgetController.js"></script>  
+

@@ -13,6 +13,11 @@ budget = Blueprint(
 EXP_DATA_FILE = Path("data/expenses.json")
 INC_DATA_FILE = Path("data/income.json")
 
+@budget.route("/")
+def ui():
+    expenses = load_expenses()
+    return render_template("budget.html", expenses=expenses)
+
 # If file doesnt exist make it, if file is empty then catch exception
 def load_expenses():
     if not EXP_DATA_FILE.exists():
@@ -49,11 +54,6 @@ def save_income(data):
         json.dump(data, i, indent=2)
 
 #----------EXPENSES----------
-@budget.route("/")
-def ui():
-    expenses = load_expenses()
-    return render_template("template.html", expenses=expenses)
-
 @budget.route("/expenses/getData", methods=["GET"])
 def load_expense_data():
     expenses = load_expenses()
