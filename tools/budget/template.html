@@ -1,22 +1,46 @@
 <h3>Family Budget</h3>
+<!--TODO: Stop being lazy and break out a css and js file-->
 <style>
 .selected{
   background-color: #1aff66;
 }
 
-#delete-button{
+.delete-button{
   background-color: #FF2400;
+}
+
+.table-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  align-items: flex-start;
+}
+
+.input-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  align-items: flex-start;
 }
 </style>
 
-
+<div class=input-container>  
 <input id="name" name="name" placeholder="Expense name" required>
 <input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
 <button type="button" onclick="addExpense()">Add</button>
 
+<input id="income-name" name="income-name" placeholder="income name" required>
+<input id="income-amount" name="income-amount" type="number" step="0.01" placeholder="Amount" required>
+<button type="button" onclick="addIncome()">Add</button>
+</div>
+
 <hr>
 
-<table>
+<div class="table-container">
+  
+<table id="expense-table">
   <thead>
   <tr>
   <th>Expense</th>
@@ -30,28 +54,178 @@
     </tr> 
   </tbody>
 </table>
+<button class="delete-button" type="button" onclick="deleteExpense()">Delete Selected Expense</button>
 
-<button id="delete-button" type="button" onclick="deleteExpense()">Delete Selected Row</button>
+
+<table id="income-table">
+  <thead>
+  <tr>
+      <th>Income</th>
+      <th>Amount</th>
+  </tr>
+  </thead>
+  <tbody id="income-list">
+   <tr id="income-total-row">
+    <td><strong>Total</strong></td>
+    <td id="income-total-amount"></td>
+    </tr>
+  </tbody>
+</table>
+<button class="delete-button" type="button" onclick="deleteIncome()">Delete Selected Income</button>
+</div>
+
 
 <script>
-async function addExpense() {
-    const name = document.getElementById("name").value;
-    const amount = document.getElementById("amount").value;
-    
-    const rows = document.querySelectorAll("#expense-list tr");
+//TODO:Extreme repetition, need to find way to combine methods 
+async function loadExpenses() {
+    const response = await fetch("/tool/budget/expenses/getData");
+    const expenses = await response.json();
+
+    const table = document.getElementById("expense-list");
+    const totalRow = document.getElementById("total-row");
+
+    let total = 0;
+
+    for (const [name, amount] of Object.entries(expenses)) {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${name}</td>
+            <td>$${Number(amount).toFixed(2)}</td>
+        `;
+
+        row.addEventListener("click", selectRow);
+
+        table.insertBefore(row, totalRow);
+
+        total += Number(amount);
+    }
+
+    document.getElementById("total-amount").innerText =
+        `$${total.toFixed(2)}`;
+}
+
+async function loadIncomes() {
+    const response = await fetch("/tool/budget/income/getData");
+    const incomes = await response.json();
+
+    const table = document.getElementById("income-list");
+    const totalRow = document.getElementById("income-total-row");
+
+    let total = 0;
+
+    for (const [name, amount] of Object.entries(incomes)) {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${name}</td>
+            <td>$${Number(amount).toFixed(2)}</td>
+        `;
+
+        row.addEventListener("click", selectRow);
+
+        table.insertBefore(row, totalRow);
+
+        total += Number(amount);
+    }
+
+    document.getElementById("income-total-amount").innerText =
+        `$${total.toFixed(2)}`;
+}
+
+async function addIncome(){
+   const name = document.getElementById("income-name").value.trim();
+   const amount = document.getElementById("income-amount").value;
+
+    if (!name || !amount) {
+        alert("Please enter both a name and amount.");
+        return;
+    }
+
+    // Prevent duplicates already in the table
+    const rows = document.querySelectorAll("#income-list tr");
+
     for (const row of rows) {
-        if (row.id === "total-row") continue; // skip total row
+        if (row.id === "income-total-row") continue;
+
         const existingName = row.children[0].innerText.trim();
-        if (existingName === name) {
+
+        if (existingName.toLowerCase() === name.toLowerCase()) {
             alert(`Expense "${name}" already exists!`);
             return;
         }
     }
 
-    const response = await fetch("/tool/budget/add", {
+    const response = await fetch("/tool/budget/income/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, amount })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            amount: amount
+        })
+    });
+
+    const data = await response.json();
+
+    const table = document.getElementById("income-list");
+    const totalRow = document.getElementById("income-total-row");
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${data.name}</td>
+        <td>$${Number(data.amount).toFixed(2)}</td>
+    `;
+
+    row.addEventListener("click", selectRow);
+
+    table.insertBefore(row, totalRow);
+
+    document.getElementById("income-total-amount").innerText =
+        `$${Number(data.total).toFixed(2)}`;
+
+    // Clear inputs
+    document.getElementById("income-name").value = "";
+    document.getElementById("income-amount").value = "";
+}
+
+
+async function addExpense() {
+    const name = document.getElementById("name").value.trim();
+    const amount = document.getElementById("amount").value;
+
+    if (!name || !amount) {
+        alert("Please enter both a name and amount.");
+        return;
+    }
+
+    // Prevent duplicates already in the table
+    const rows = document.querySelectorAll("#expense-list tr");
+
+    for (const row of rows) {
+        if (row.id === "total-row") continue;
+
+        const existingName = row.children[0].innerText.trim();
+
+        if (existingName.toLowerCase() === name.toLowerCase()) {
+            alert(`Expense "${name}" already exists!`);
+            return;
+        }
+    }
+
+    const response = await fetch("/tool/budget/expenses/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            amount: amount
+        })
     });
 
     const data = await response.json();
@@ -60,14 +234,18 @@ async function addExpense() {
     const totalRow = document.getElementById("total-row");
 
     const row = document.createElement("tr");
+
     row.innerHTML = `
         <td>${data.name}</td>
-        <td>$${data.amount}</td>
+        <td>$${Number(data.amount).toFixed(2)}</td>
     `;
+
     row.addEventListener("click", selectRow);
+
     table.insertBefore(row, totalRow);
 
-    document.getElementById("total-amount").innerText = `$${data.total}`;
+    document.getElementById("total-amount").innerText =
+        `$${Number(data.total).toFixed(2)}`;
 
     // Clear inputs
     document.getElementById("name").value = "";
@@ -91,7 +269,7 @@ async function deleteExpense() {
     const name = selected.children[0].innerText;
     const amount = selected.children[1].innerText.replace("$", "");
 
-    const response = await fetch("/tool/budget/delete", {
+    const response = await fetch("/tool/budget/expenses/delete", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, amount })
@@ -105,5 +283,30 @@ async function deleteExpense() {
         selected.remove();
     }
 }
+
+async function deleteIncome(){
+    const selected = document.querySelector("#income-list .selected");
+    if (!selected) return alert("Select a row first");
+    
+    const name = selected.children[0].innerText;
+    const amount = selected.children[1].innerText.replace("$", "");
+
+    const response = await fetch("/tool/budget/income/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, amount })
+    });
+    
+    const data = await response.json();
+    console.log(data);
+    document.getElementById("income-total-amount").innerText = `$${data.total}`;
+    
+    if (response.ok) {
+        selected.remove();
+    }
+}
+
+loadExpenses()
+loadIncomes()
 </script>  
 
