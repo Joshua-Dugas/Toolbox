@@ -26,11 +26,14 @@
 </style>
 
 <h3>Family Budget</h3>
+<p><i>All entered information is calculated on a PER MONTH basis.</i></p>
+<h4>Enter Expenses:</h4>
 <div class=input-container>  
 <input id="name" name="name" placeholder="Expense name" required>
 <input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
 <button type="button" onclick="addExpense()">Add</button>
 
+<h4>Enter Income:</h4>
 <input id="income-name" name="income-name" placeholder="income name" required>
 <input id="income-amount" name="income-amount" type="number" step="0.01" placeholder="Amount" required>
 <button type="button" onclick="addIncome()">Add</button>
@@ -89,9 +92,13 @@
         <td><strong>Total Expenses</strong></td>
         <td id="bd-expense-total-amount"></td>
       </tr>
-      <tr id="net-income-row">
-        <td><strong>Net Income</strong></td>
-        <td id="net-amount"></td>
+      <tr id="bd-per-check-expense-row">
+        <td><strong>Per Check Expense</strong></td>
+        <td id="bd-per-check-amount"></td>
+      </tr>
+      <tr id="bd-savings-row">
+        <td><strong>Amount to Savings</strong></td>
+        <td id="bd-savings-amount"></td>
       </tr>
     </tbody>
 </table>
