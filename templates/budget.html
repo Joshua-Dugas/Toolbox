@@ -31,6 +31,10 @@
 <div class=input-container>  
 <input id="name" name="name" placeholder="Expense name" required>
 <input id="amount" name="amount" type="number" step="0.01" placeholder="Amount" required>
+<select name="allotment" id="allotment">
+  <option value="Bills">Bills</option>
+  <option value="Savings">Savings</option>
+</select>
 <button type="button" onclick="addExpense()">Add</button>
 
 <h4>Enter Income:</h4>
@@ -48,10 +52,11 @@
   <tr>
   <th>Expense</th>
   <th>Amount</th>
+  <th>Allotment Account</th>
   </tr>
   </thead>
   <tbody id="expense-list">
-    <tr id="expense-total-row">
+    <tr id="expense-total-row">    
     <td><strong>Total</strong></td>
     <td id="expense-total-amount">$0</td>
     </tr> 
@@ -95,6 +100,14 @@
       <tr id="bd-per-check-expense-row">
         <td><strong>Per Check Expense</strong></td>
         <td id="bd-per-check-amount"></td>
+      </tr>
+      <tr id="bd-expense-from-savings-row">
+        <td><strong>Expenses From Savings</strong></td>
+        <td id="bd-expenses-from-savings-amount"></td>
+      </tr>
+      <tr id="bd-expenses-from-bills-row">
+        <td><strong>Expenses From Bills</strong></td>
+        <td id="bd-expenses-from-bills-amount"></td>
       </tr>
       <tr id="bd-savings-row">
         <td><strong>Amount to Savings</strong></td>

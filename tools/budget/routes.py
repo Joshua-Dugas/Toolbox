@@ -57,6 +57,7 @@ def save_income(data):
 @budget.route("/expenses/getData", methods=["GET"])
 def load_expense_data():
     expenses = load_expenses()
+    print(expenses)
     return jsonify(expenses)
 
 @budget.route("/expenses/add", methods=["POST"])
@@ -66,14 +67,26 @@ def add_expense():
     data = request.json
     name = data["name"]
     amount = float(data["amount"])
-    expenses[name] = amount
+    allotment = data["allotment"]
+    expenses[name] = {
+        "amount": amount,
+        "allotment": allotment
+        }
+
+    total = 0;
+
+    for i in expenses.values():
+        total += float(i["amount"])
+    
 
     save_expense(expenses)
+    print(expenses)
 
     return jsonify({
         "name": name,
         "amount": amount,
-        "total": sum(expenses.values())
+        "allotment": allotment,
+        "total": total
     })
 
 @budget.route("/expenses/delete", methods=["DELETE"])
@@ -82,6 +95,10 @@ def delete_expense():
 
     data = request.json
     name = data["name"]
+    
+    total = 0;
+    for i in expenses.values():
+        total += float(i["amount"])
 
     expenses.pop(name)
 
@@ -89,10 +106,10 @@ def delete_expense():
 
     print(f"Deleting expense of name {name}")
     print(f"Total expenses: {expenses}")
-
+    
     return jsonify({
         "name": name,
-        "total": sum(expenses.values())
+        "total": total
     })
 
 #------------INCOME--------------

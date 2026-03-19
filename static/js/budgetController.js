@@ -1,5 +1,5 @@
 //TODO:Extreme repetition, need to find way to combine method
-//TODO:Need at add table column for account allotment and get those totals created in breakdown
+
 async function init() {
   await loadExpenses();
   await loadIncomes();
@@ -18,9 +18,38 @@ async function updateBreakdownTable() {
   let perCheckTotal = expenseTotal / 2;
   let savingsTotal = incomeTotal - expenseTotal;
 
+  // Bills Vs Savings calcs 
+  const table = document.getElementById("expense-list");
+  const rows = table.querySelectorAll("tr");
+
+  let fromBillsTotal = 0;
+  let fromSavingsTotal = 0;
+
+  rows.forEach((row) => {
+    const allotmentCell = row.cells[2];
+    if (!allotmentCell) return;
+
+    const allotment = allotmentCell.innerText.trim().toLowerCase();
+
+    const amountCell = row.cells[1];
+    if (!amountCell) return;
+
+    //Converts cell text to number 
+    const amount = Number(amountCell.innerText.replace(/[^0-9.-]+/g, ""));
+
+    if (allotment === "bills") {
+      fromBillsTotal += amount;
+    } else if (allotment === "savings") {
+      fromSavingsTotal += amount;
+    }
+  });
+
+  //Ugly but meh
   document.getElementById("bd-income-total-amount").innerText = `$${incomeTotal.toFixed(2)}`;
   document.getElementById("bd-expense-total-amount").innerText = `$${expenseTotal.toFixed(2)}`;
   document.getElementById("bd-per-check-amount").innerText = `$${perCheckTotal.toFixed(2)}`;
+  document.getElementById("bd-expenses-from-savings-amount").innerText = `$${fromSavingsTotal.toFixed(2)}`;
+  document.getElementById("bd-expenses-from-bills-amount").innerText = `$${fromBillsTotal.toFixed(2)}`;
   document.getElementById("bd-savings-amount").innerText = `$${savingsTotal.toFixed(2)}`;
 }
 
@@ -33,13 +62,16 @@ async function loadExpenses() {
 
   let total = 0;
 
-  for (const [name, amount] of Object.entries(expenses)) {
-
+  //becuase we are sending back a dict we need to extract the amount and allotment per expense
+  for (const [name, expense] of Object.entries(expenses)) {
+    amount = expense.amount;
+    allotment = expense.allotment;
     const row = document.createElement("tr");
 
     row.innerHTML = `
             <td>${name}</td>
             <td>$${Number(amount).toFixed(2)}</td>
+            <td>${allotment}</td>
         `;
 
     row.addEventListener("click", selectRow);
@@ -48,7 +80,7 @@ async function loadExpenses() {
 
     total += Number(amount);
   }
-  //loads value for breakdown talbe 
+  //loads value for breakdown table
   document.getElementById("expense-total-amount").innerText =
     `$${total.toFixed(2)}`;
 }
@@ -146,8 +178,9 @@ async function addIncome() {
 async function addExpense() {
   const name = document.getElementById("name").value.trim();
   const amount = document.getElementById("amount").value;
+  const allotment = document.getElementById("allotment").value.trim();
 
-  if (!name || !amount) {
+  if (!name || !amount || !allotment) {
     alert("Please enter both a name and amount.");
     return;
   }
@@ -173,12 +206,13 @@ async function addExpense() {
     },
     body: JSON.stringify({
       name: name,
-      amount: amount
+      amount: amount,
+      allotment: allotment
     })
   });
 
-  const data = await response.json();
 
+  const data = await response.json();
   const table = document.getElementById("expense-list");
   const totalRow = document.getElementById("expense-total-row");
 
@@ -187,6 +221,7 @@ async function addExpense() {
   row.innerHTML = `
         <td>${data.name}</td>
         <td>$${Number(data.amount).toFixed(2)}</td>
+        <td>${data.allotment}</td>
     `;
 
   row.addEventListener("click", selectRow);
@@ -209,15 +244,15 @@ async function deleteExpense() {
 
   const name = selected.children[0].innerText;
   const amount = selected.children[1].innerText.replace("$", "");
+  const allotment = selected.children[2].innerText;
 
   const response = await fetch("/tool/budget/expenses/delete", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, amount })
+    body: JSON.stringify({ name, amount, allotment })
   });
 
   const data = await response.json();
-  console.log(data);
   document.getElementById("expense-total-amount").innerText = `$${data.total}`;
 
   if (response.ok) {
