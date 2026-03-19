@@ -60,6 +60,11 @@ async function loadExpenses() {
   const table = document.getElementById("expense-list");
   const totalRow = document.getElementById("expense-total-row");
 
+  // Clear existing rows except the total row
+  table.querySelectorAll("tr").forEach(r => {
+    if (r !== totalRow) r.remove();
+  });
+
   let total = 0;
 
   //becuase we are sending back a dict we need to extract the amount and allotment per expense
@@ -91,6 +96,11 @@ async function loadIncomes() {
 
   const table = document.getElementById("income-list");
   const totalRow = document.getElementById("income-total-row");
+
+  // Clear existing rows except the total row
+  table.querySelectorAll("tr").forEach(r => {
+    if (r !== totalRow) r.remove();
+  });
 
   let total = 0;
 
@@ -171,6 +181,7 @@ async function addIncome() {
   document.getElementById("income-name").value = "";
   document.getElementById("income-amount").value = "";
 
+  await loadIncomes();
   updateBreakdownTable();
 }
 
@@ -235,6 +246,7 @@ async function addExpense() {
   document.getElementById("name").value = "";
   document.getElementById("amount").value = "";
 
+  await loadExpenses();
   updateBreakdownTable();
 }
 
@@ -258,7 +270,7 @@ async function deleteExpense() {
   if (response.ok) {
     selected.remove();
   }
-
+  await loadExpenses();
   updateBreakdownTable();
 }
 
@@ -283,6 +295,7 @@ async function deleteIncome() {
     selected.remove();
   }
 
+  await loadIncomes();
   updateBreakdownTable();
 }
 
