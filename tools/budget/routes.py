@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, jsonify
 import json
 from pathlib import Path
 
+#TODO: Lets add some graphs in here eventually 
 budget = Blueprint(
     "budget",
     __name__,
@@ -10,6 +11,7 @@ budget = Blueprint(
 
 #TODO:There is some extreme repition in here. Need to figure out how to combine some of these methods
 
+#----------Save Functions----------
 EXP_DATA_FILE = Path("data/expenses.json")
 INC_DATA_FILE = Path("data/income.json")
 
@@ -53,7 +55,9 @@ def save_income(data):
     with open(INC_DATA_FILE, "w") as i:
         json.dump(data, i, indent=2)
 
-#----------EXPENSES----------
+#-----------Routes----------- 
+
+#-----EXPENSES-----
 @budget.route("/expenses/getData", methods=["GET"])
 def load_expense_data():
     expenses = load_expenses()
@@ -112,7 +116,7 @@ def delete_expense():
         "total": total
     })
 
-#------------INCOME--------------
+#-------INCOME---------
 @budget.route("/income/getData")
 def load_income_data():
     incomes = load_incomes()

@@ -1,0 +1,26 @@
+<style>
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}   
+</style>
+
+<h3>Verse Memorization</h3>
+
+<div id="input-container">
+  <p>Enter the book, chapter, and verse number</p>
+  <input id="bk-ch-vs" name="book chapter verse" placeholder="John 3:16">
+  <p>Enter the verse text(no quotes or verse number)</p>
+  <input id="vs-text" name="verse text" placeholder="For God so loved the world...">
+  <button type="button" onclick="addVerse()"> Add Verse</button>
+</div>
+
+<hr>
+<h4>Verses:</h4>
+<div id="verse-list-container">
+  <!--Here js will dynamically generate a list of verses and maybe a button-->
+  <ul id="verse-list"></ul>
+</div>
+
+<script src="/static/js/memoryVerseController.js"></script>
