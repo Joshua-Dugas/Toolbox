@@ -1,6 +1,7 @@
 from flask import Flask, render_template 
 from tools.budget.routes import budget
 from tools.memoryVerse.routes import memoryVerse
+from tools.rti.routes import rti
 
 app = Flask(__name__)
 
@@ -11,8 +12,8 @@ def dashboard():
 
 #register blueprints here
 app.register_blueprint(budget, url_prefix="/tool/budget")
-
 app.register_blueprint(memoryVerse, url_prefix="/tool/memoryVerse")
+app.register_blueprint(rti, url_prefix="/tool/rti")
 
 #Maybe change this port in future
 if __name__ == "__main__":

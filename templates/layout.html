@@ -20,6 +20,12 @@
           hx-swap="innerHTML">
           Memory Verse
         </button>
+        <button 
+        hx-get="/tool/rti"
+        hx-target="#workspace"
+        hx-swap="innerHTML">
+        RTI 
+        </button>
       </div>
       <div class="workspace" id="workspace">
         {% block content %}{% endblock %}
