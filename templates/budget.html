@@ -6,6 +6,7 @@
 
 .delete-button{
   background-color: #FF2400;
+  color: white;
 }
 
 .table-container{
@@ -22,6 +23,51 @@
   justify-content: space-around;
   flex: 0 0 auto;
   align-items: flex-start;
+}
+
+.table-block{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+}
+
+.delete-button{
+  padding:6px 12px;
+  width:auto;
+  font-size:14px;
+}
+
+/* ---------------------------
+   MOBILE 
+----------------------------*/
+@media (max-width: 768px) {
+
+.table-container{
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-container{
+  width: 100%;
+}
+
+input, select, button{
+  width: 100%;
+  box-sizing: border-box;
+}
+
+table{
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.delete-button{
+  width: 100%;
+  margin-bottom: 15px;
+}
+
 }
 </style>
 
@@ -46,7 +92,8 @@
 <hr>
 
 <div class="table-container">
-  
+
+<div class="table-block">
 <table id="expense-table">
   <thead>
   <tr>
@@ -62,9 +109,14 @@
     </tr> 
   </tbody>
 </table>
-<button class="delete-button" type="button" onclick="deleteExpense()">Delete Selected Expense</button>
+
+<button class="delete-button" type="button" onclick="deleteExpense()">
+Delete Selected Expense
+</button>
+</div>
 
 
+<div class="table-block">
 <table id="income-table">
   <thead>
   <tr>
@@ -79,8 +131,14 @@
     </tr>
   </tbody>
 </table>
-<button class="delete-button" type="button" onclick="deleteIncome()">Delete Selected Income</button>
 
+<button class="delete-button" type="button" onclick="deleteIncome()">
+Delete Selected Income
+</button>
+</div>
+
+
+<div class="table-block">
 <table>
     <thead>
   <tr>
@@ -117,6 +175,7 @@
 </table>
 </div>
 
+</div>
 
 <script src="/static/js/budgetController.js"></script>  
 

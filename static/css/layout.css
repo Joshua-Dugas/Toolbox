@@ -1,4 +1,4 @@
-body {
+ibody {
     margin: 0;
     font-family: Arial;
 }
@@ -41,3 +41,41 @@ table, th, td {
   border: 1px solid black;
 }
 
+/* ---------------------------
+   MOBILE RESPONSIVE LAYOUT
+----------------------------*/
+@media (max-width: 768px) {
+
+    .app {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px;
+    }
+
+    .sidebar h2 {
+        display: none;
+    }
+
+    .sidebar button {
+        flex: 1 0 auto;
+        white-space: nowrap;
+    }
+
+    .workspace {
+        padding: 15px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 14px;
+    }
+
+}
