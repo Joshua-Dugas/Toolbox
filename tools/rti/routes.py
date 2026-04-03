@@ -10,19 +10,31 @@ rti = Blueprint(
     template_folder="."
 )
 
-SPLASH_ART = Path("tools/rti/assets/introSplash.txt") 
 
 @rti.route("/")
 def ui():
    return render_template("rti.html") 
 
-#TODO: This is temporary, eventually will have game engine pass in the scene name and art 
+"""
+screen_name = the visual render of ascii art 
+Actions = menu options that print to the screen
+Scene = The complete render of screen and actions 
+"""
 @rti.route("/loadScreen", methods=["GET"])
 def drawScene():
-    scene = {}
-    art = load_ascii(SPLASH_ART)
-    scene["name"] = "landing splash" 
-    scene["art"] = art
+    if(state_manager.is_game_initialized() == False):
+        state_manager.initialize()
+
+    screen_name = state_manager.get_current_screen()
+    ascii_art = load_ascii(screen_name)
+    actions = state_manager.get_available_actions()
+    
+    scene = {
+        "screen": ascii_art,
+        "actions": actions
+    }
+
+    print(f"{scene}")
     return jsonify(scene) 
 
 @rti.route("/createGame", methods=["POST"])

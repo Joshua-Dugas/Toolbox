@@ -1,16 +1,25 @@
 async function initializeGame() {
   const response = await fetch("/tool/rti/loadScreen");
   const data = await response.json();
-  const pre = document.getElementById("game-box");
-
-  pre.innerHTML = `
-    ${data.art}
+  const ac = document.getElementById("ascii-container");
+  const mc = document.getElementById("menu-container")
+  ac.innerHTML = `
+    ${data.screen}
   `;
 
-  console.log("loaded scene: " + data.name);
+  mc.innerHTML = "";
+
+  data.actions.forEach(action => {
+
+    const li = document.createElement("li");
+
+    li.textContent = action;
+
+    mc.appendChild(li);
+
+  });
 }
 
-// Create a new game
 async function createGame(saveName, gameData) {
   const response = await fetch("/tool/rti/createGame", {
     method: "POST",
@@ -22,7 +31,6 @@ async function createGame(saveName, gameData) {
   console.log("CreateGame response:", data);
 }
 
-// Save current game
 async function saveGame(saveName, gameData) {
   const response = await fetch("/tool/rti/saveGame", {
     method: "POST",
@@ -34,7 +42,6 @@ async function saveGame(saveName, gameData) {
   console.log("SaveGame response:", data);
 }
 
-// Load a saved game
 async function loadGame(saveName) {
   const response = await fetch(`/tool/rti/loadGame/${saveName}`);
   const data = await response.json();

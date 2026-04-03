@@ -1,14 +1,59 @@
+<style>
+/* Base layout: side-by-side for desktop/tablet */
+#game-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px; /* space between columns */
+}
+
+#ascii-container {
+  flex: 2; /* larger area for scene */
+  white-space: pre;
+  overflow-x: auto; /* prevent breaking if content is too wide */
+}
+
+#menu-container {
+  flex: 1; /* smaller column for menu */
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Styling for the pre blocks */
+pre {
+  font-family: monospace;
+  padding: 10px;
+  border: 1px solid #444;
+  background: #111;
+  color: #ddd;
+  border-radius: 6px;
+}
+
+/* Mobile-friendly layout: stack vertically on small screens */
+@media (max-width: 600px) {
+  #game-container {
+    flex-direction: column;
+  }
+
+  #ascii-container,
+  #menu-container {
+    flex: unset;   /* allow natural height */
+    width: 100%;  /* full width */
+  }
+}
+</style>
+
 <h3>Roads To Izalyth</h3>
 
+<div id="game-container">
+  <pre id="ascii-container" onload="populaeScene()"><strong>Roads to Izalyth</strong></pre>  
+  <p>Available Actions:</p>
+  <pre id="menu-container"></pre>
+</div>
 <!--This is just placeholder until I setup image and menu generation-->
-<pre id="game-box" onload="populaeScene()"><strong>Roads to Izalyth</strong> 
- 
-</pre>
 
-<pre id="menu-box">
-  1. Start New Adventure  
-  2. Load Game 
-</pre>
+
+
 
 <script>
   initializeGame()
