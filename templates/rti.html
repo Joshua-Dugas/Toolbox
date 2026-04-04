@@ -1,25 +1,36 @@
 <style>
-/* Base layout: side-by-side for desktop/tablet */
+/* Base layout */
 #game-container {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 20px; /* space between columns */
+  gap: 20px;
 }
 
-#ascii-container {
-  flex: 2; /* larger area for scene */
-  white-space: pre;
-  overflow-x: auto; /* prevent breaking if content is too wide */
+/* Left column holds ascii + text stacked */
+#left-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  gap: 10px;
 }
 
-#menu-container {
-  flex: 1; /* smaller column for menu */
+/* Right column holds buttons */
+#button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+/* ASCII + text areas */
+#ascii-container,
+#text-container {
   white-space: pre;
   overflow-x: auto;
 }
 
-/* Styling for the pre blocks */
+/* console look */
 pre {
   font-family: monospace;
   padding: 10px;
@@ -29,16 +40,37 @@ pre {
   border-radius: 6px;
 }
 
-/* Mobile-friendly layout: stack vertically on small screens */
+/* buttons styled like console blocks */
+#button-container button {
+  font-family: monospace;
+  background: #111;
+  color: #ddd;
+  border: 1px solid #444;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* hover effect */
+#button-container button:hover {
+  background: #222;
+  border-color: #666;
+}
+
+/* active click effect */
+#button-container button:active {
+  background: #333;
+}
+
+/* Mobile layout */
 @media (max-width: 600px) {
   #game-container {
     flex-direction: column;
   }
 
-  #ascii-container,
-  #menu-container {
-    flex: unset;   /* allow natural height */
-    width: 100%;  /* full width */
+  #button-container {
+    width: 100%;
   }
 }
 </style>
@@ -46,14 +78,18 @@ pre {
 <h3>Roads To Izalyth</h3>
 
 <div id="game-container">
-  <pre id="ascii-container" onload="populaeScene()"><strong>Roads to Izalyth</strong></pre>  
-  <p>Available Actions:</p>
-  <pre id="menu-container"></pre>
+
+  <div id="left-panel">
+    <pre id="ascii-container"></pre>  
+    <pre id="text-container"></pre>
+  </div>
+
+  <div>
+    <p>Available Actions:</p>
+    <div id="button-container"></div>
+  </div>
+
 </div>
-<!--This is just placeholder until I setup image and menu generation-->
-
-
-
 
 <script>
   initializeGame()

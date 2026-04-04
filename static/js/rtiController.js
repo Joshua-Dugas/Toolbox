@@ -1,23 +1,35 @@
 async function initializeGame() {
+  gameData = await fetchGameState();
+  renderScene(gameData);
+}
+
+async function fetchGameState() {
   const response = await fetch("/tool/rti/loadScreen");
-  const data = await response.json();
+  const gameData = await response.json();
+  return gameData;
+}
+
+async function renderScene(gameData) {
+  //-----redner Ascii Art-----
   const ac = document.getElementById("ascii-container");
-  const mc = document.getElementById("menu-container")
-  ac.innerHTML = `
-    ${data.screen}
-  `;
+  ac.innerHTML = `${gameData.screen}`;
 
-  mc.innerHTML = "";
+  //-----render buttons----- 
+  const bc = document.getElementById("button-container");
+  //We want to clear the previous screens buttons 
+  bc.replaceChildren();
 
-  data.actions.forEach(action => {
-
-    const li = document.createElement("li");
-
-    li.textContent = action;
-
-    mc.appendChild(li);
-
+  //Setting the id = action allows us to send the action taken to the backend
+  gameData.actions.forEach(action => {
+    const btn = document.createElement("button");
+    bc.appendChild(btn);
+    btn.innerText = action;
+    btn.setAttribute("id", action);
   });
+
+  //-----redner text block-----
+  const tc = document.getElementById("text-container");
+  tc.innerText = gameData.text;
 }
 
 async function createGame(saveName, gameData) {

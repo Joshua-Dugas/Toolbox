@@ -16,7 +16,8 @@ def ui():
    return render_template("rti.html") 
 
 """
-screen_name = the visual render of ascii art 
+screen_name = the visual render of ascii art
+Text = narrative text to display with ascii art 
 Actions = menu options that print to the screen
 Scene = The complete render of screen and actions 
 """
@@ -28,13 +29,14 @@ def drawScene():
     screen_name = state_manager.get_current_screen()
     ascii_art = load_ascii(screen_name)
     actions = state_manager.get_available_actions()
-    
+    text = state_manager.get_current_text() 
+
     scene = {
         "screen": ascii_art,
+        "text": text,
         "actions": actions
     }
-
-    print(f"{scene}")
+    print(f"Loading Scene:{screen_name}...")
     return jsonify(scene) 
 
 @rti.route("/createGame", methods=["POST"])
